@@ -1,0 +1,72 @@
+### list all droplets
+doctl compute droplet list -o json
+
+### get droplet by droplet id and list its name:
+doctl compute droplet get 148305306 --template "name: {{ .Name }}"
+
+### filter the list for all names that have nick in them:
+doctl compute droplet ls '*nicks*'
+
+### list all ssh keys
+doctl compute ssh-key list -o json
+
+### list all public images (images you can create)
+doctl compute image list --public -o json
+
+### Create ssh-key, multi commands
+export SSH_PUB=$(cat ~/.ssh/id_rsa.pub)
+doctl compute ssh-key create nickmacbook --public-key "$SSH_PUB"
+
+### get the uploaded ssh-key id
+KEY_ID=$(doctl compute ssh-key ls --format "ID,Name" | grep nickmacbook | awk '{print $1}')
+
+### Create droplet, remember to SSH in as root
+doctl compute droplet create a-test \
+  --ssh-keys "$KEY_ID" \
+  --size s-1vcpu-1gb \
+  --image ubuntu-18-04-x64 \
+  --enable-monitoring \
+  --region nyc1
+
+### use doctl to ssh into your created droplet
+doctl compute ssh a-test
+
+### get the droplet id from the name:
+DROPLET_NAME=a-test
+TEST_DROPLET_ID=$(doctl compute droplet list --format "ID,Name" | grep "$DROPLET_NAME" | awk '{print $1}')
+
+### create a floating IP address and assign it to your droplet
+doctl compute floating-ip create --droplet-id "$TEST_DROPLET_ID"
+
+### get the ipv4 address from the created floating ip
+CREATED_FLOATING_IP=$(doctl compute floating-ip list | grep "$DROPLET_NAME" | awk '{print $1}')
+
+### assuming you've added a "nicktestsstuff" domain, this points "www.nicktestsstuff.xyz" at your floating ip
+doctl compute domain records create nicktestsstuff.xyz \
+  --record-name www \
+  --record-type A \
+  --record-data "$CREATED_FLOATING_IP" \
+  --record-ttl 120
+
+### this points nicktestsstuf.xyz at your floating ip
+doctl compute domain records create nicktestsstuff.xyz --record-name @ \
+  --record-type A \
+  --record-data "$CREATED_FLOATING_IP" \
+  --record-ttl 120
+
+#### DELETING STUFF #####
+
+## get and delete domain records you created
+IDS=$(doctl compute domain records list $DOMAIN | grep " A " | awk '{print $1}')
+echo "$IDS" | while read id; do 
+  doctl compute domain records delete -f nicktestsstuff.xyz "$id"
+done
+
+## destroy floating ip
+doctl compute fip delete -f $CREATED_FLOATING_IP
+
+## Destroy droplet
+DROPLET_ID=$(doctl compute droplet ls --format "ID,Name" | grep a-test | awk '{print $1}')
+doctl compute droplet delete -f $DROPLET_ID
+
+

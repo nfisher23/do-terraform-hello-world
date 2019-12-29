@@ -1,0 +1,73 @@
+{
+  "version": 4,
+  "terraform_version": "0.12.15",
+  "serial": 42,
+  "lineage": "23374ba4-f32b-5e92-9068-d8cb468f2d19",
+  "outputs": {
+    "atest_floating_ip": {
+      "value": "157.230.67.240",
+      "type": "string"
+    }
+  },
+  "resources": [
+    {
+      "mode": "managed",
+      "type": "digitalocean_domain",
+      "name": "nicktest",
+      "provider": "provider.digitalocean",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "id": "nicktestsstuff.xyz",
+            "ip_address": null,
+            "name": "nicktestsstuff.xyz",
+            "urn": "do:domain:nicktestsstuff.xyz"
+          },
+          "private": "eyJzY2hlbWFfdmVyc2lvbiI6IjAifQ=="
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "digitalocean_floating_ip",
+      "name": "atest_floating_ip",
+      "provider": "provider.digitalocean",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "droplet_id": 173486844,
+            "id": "157.230.67.240",
+            "ip_address": "157.230.67.240",
+            "region": "nyc1",
+            "urn": "do:floatingip:157.230.67.240"
+          },
+          "private": "bnVsbA==",
+          "dependencies": [
+            "digitalocean_droplet.atest",
+            "digitalocean_ssh_key.nickmacbook"
+          ]
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "digitalocean_ssh_key",
+      "name": "nickmacbook",
+      "provider": "provider.digitalocean",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "fingerprint": "5b:c1:65:44:7a:80:f1:a7:50:36:91:87:99:ab:78:74",
+            "id": "26143629",
+            "name": "nickmacbook",
+            "public_key": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC79ZDnG6yI322Qw0OopaaZFVSjxbDtq9mYhycSM4Y1mc19sCjLUhjZHsPNEq/28x0uEUOpwDSA8q1V3HXmcCYRqFZa75tpvh3xytZw6Y5+e3tfCBbQIYRLROn/Xnz7tMo4EhSPpX0zPrx+Bese5bojtLmVokLkPTWZD6EMj1nqZ+C2Bm3RPShlfCoopS/Ivj1vszLEDvPsiVcUz0U2BD0aqM2OXG2TFWJS4kDvOrvwChNEinPwR/eC+ELz4XP9LLdZCx05r3XrlcqMPm1OF0WaA8Z2l1hxnfsDvdiiJNlpWsqNiTGSJeLyakP7BAe7DtCETZzQhM/CwiNmnXnFqtkR nick@nickMacbookPro"
+          },
+          "private": "bnVsbA=="
+        }
+      ]
+    }
+  ]
+}
