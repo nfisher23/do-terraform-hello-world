@@ -16,7 +16,7 @@ resource "digitalocean_ssh_key" "nickmacbook" {
 }
 
 module "nginx_droplet" {
-  source = "./modules/droplet_nginx"
+  source = "../../modules/droplet_nginx"
   ssh_keys = [digitalocean_ssh_key.nickmacbook.id]
   name = "atest"
   region = var.region
